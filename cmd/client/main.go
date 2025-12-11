@@ -1,7 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"os/signal"
+)
 
 func main() {
-	fmt.Println("Starting Peril client...")
+	gameState, ch := ClientStartup()
+
+	ListenForCommands(gameState, ch)
+
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt)
+	<-signalChan
+	fmt.Println("Console is shutting down")
 }
+

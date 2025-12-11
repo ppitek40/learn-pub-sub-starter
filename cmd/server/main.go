@@ -1,7 +1,21 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os/signal"
+	"os"
+	"github.com/ppitek40/learn-pub-sub-starter/internal/gamelogic"
+)
 
 func main() {
-	fmt.Println("Starting Peril server...")
+	ch := ServerStartup()
+
+	gamelogic.PrintServerHelp()
+	
+	ListenForCommands(ch)
+
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt)
+	<-signalChan
+	fmt.Println("Console is shutting down")
 }
